@@ -39,17 +39,17 @@ const EditBlogPage = () => {
     title: "",
     description: "",
     category: "",
-    image: null,
+    image: null as File | null,
     blogcontent: "",
   });
 
-  const handleInputChange = (e: any) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleFileChange = (e: any) => {
-    const file = e.target.files[0];
-    setFormData({ ...formData, image: file });
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    setFormData({ ...formData, image: file || null });
   };
 
   const config = useMemo(
@@ -60,14 +60,15 @@ const EditBlogPage = () => {
     []
   );
 
-  const [existingImage, setExistingImage] = useState(null);
+  const [existingImage, setExistingImage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchBlog = async () => {
       setLoading(true);
       try {
         const { data } = await axios.get(`${blog_service}/api/v1/blog/${id}`);
-        const blog = data.blog;
+        const responseData = data as { blog: { title: string; description: string; category: string; blogcontent: string; image: string } };
+        const blog = responseData.blog;
 
         setFormData({
           title: blog.title,
@@ -88,7 +89,7 @@ const EditBlogPage = () => {
     if (id) fetchBlog();
   }, [id]);
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
@@ -115,7 +116,7 @@ const EditBlogPage = () => {
         }
       );
 
-      toast.success(data.message);
+      toast.success((data as { message: string }).message);
       fetchBlogs();
       
       // Redirect back to the blog detail page after a short delay

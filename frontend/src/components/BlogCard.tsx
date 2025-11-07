@@ -3,6 +3,7 @@ import React from "react";
 import { Card } from "./ui/card";
 import { Calendar } from "lucide-react";
 import moment from "moment";
+import Image from "next/image";
 
 interface BlogCardProps {
   image: string;
@@ -22,8 +23,8 @@ const BlogCard: React.FC<BlogCardProps> = ({
   return (
     <Link href={`/blog/${id}`}>
       <Card className="overflow-hidden rounded-lg shadow-none transition-shadow duration-300 hover:shadow-xl border-none">
-        <div className="w-full h-[200px]">
-          <img src={image} alt={title} className="w-full h-full object-cover" />
+        <div className="w-full h-[200px] relative">
+          <Image src={image} alt={title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
         </div>
 
         <div className="p-0">

@@ -28,7 +28,7 @@ const UserProfilePage = () => {
   async function fetchUser() {
     try {
       const { data } = await axios.get(`${user_service}/api/v1/user/${id}`);
-      setUser(data);
+      setUser(data as User);
     } catch (error) {
       console.log(error);
     }

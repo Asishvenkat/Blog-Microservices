@@ -64,7 +64,7 @@ const Profilepage = () => {
       setUser(data.user);
       setOpen(false);
       setLoading(false);
-    } catch (error) {
+    } catch {
       toast.error("Failed to update profile");
       setLoading(false);
     }
@@ -99,7 +99,7 @@ const Profilepage = () => {
           path: "/",
         });
         setUser(data.user);
-      } catch (error) {
+      } catch {
         toast.error("Image Update Failed");
         setLoading(false);
       }

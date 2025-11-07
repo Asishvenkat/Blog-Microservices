@@ -88,7 +88,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [isAuth, setIsAuth] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  async function fetchUser() {
+  const fetchUser = React.useCallback(async () => {
     try {
       const token = Cookies.get("token");
 
@@ -105,7 +105,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       console.log(error);
       setLoading(false);
     }
-  }
+  }, []);
 
   const [blogLoading, setBlogLoading] = useState(true);
 
@@ -172,8 +172,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   useEffect(() => {
     fetchUser();
     getSavedBlogs();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetchUser]);
 
   useEffect(() => {
     fetchBlogs();

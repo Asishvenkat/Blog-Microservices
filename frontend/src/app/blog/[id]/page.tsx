@@ -9,7 +9,6 @@ import {
   Blog,
   blog_service,
   useAppData,
-  User,
 } from "@/context/AppContext";
 import axios from "axios";
 import {
@@ -39,7 +38,7 @@ const BlogPage = () => {
   const router = useRouter();
   const { id } = useParams();
   const [blog, setBlog] = useState<Blog | null>(null);
-  const [author, setAuthor] = useState<User | null>(null);
+  const [author, setAuthor] = useState<{ _id?: string; name: string; image: string } | null>(null);
   const [loading, setLoading] = useState(false);
 
   const [comments, setComments] = useState<Comment[]>([]);
@@ -48,7 +47,7 @@ const BlogPage = () => {
     try {
       setLoading(true);
       const { data } = await axios.get(`${blog_service}/api/v1/comment/${id}`);
-      setComments(data);
+      setComments(data as Comment[]);
     } catch (error) {
       console.log(error);
     } finally {
@@ -75,7 +74,7 @@ const BlogPage = () => {
           },
         }
       );
-      toast.success(data.message);
+      toast.success((data as { message: string }).message);
       setComment("");
       fetchComment();
     } catch (error) {
@@ -89,8 +88,9 @@ const BlogPage = () => {
     try {
       setLoading(true);
       const { data } = await axios.get(`${blog_service}/api/v1/blog/${id}`);
-      setBlog(data.blog);
-      setAuthor(data.author);
+      const responseData = data as { blog: Blog; author: { name: string; image: string } };
+      setBlog(responseData.blog);
+      setAuthor(responseData.author);
     } catch (error) {
       console.log(error);
     } finally {
@@ -111,7 +111,7 @@ const BlogPage = () => {
             },
           }
         );
-        toast.success(data.message);
+        toast.success((data as { message: string }).message);
         fetchComment();
       } catch (error) {
         toast.error("Problem while deleting comment");
@@ -135,7 +135,7 @@ const BlogPage = () => {
             },
           }
         );
-        toast.success(data.message);
+        toast.success((data as { message: string }).message);
         router.push("/blogs");
         setTimeout(() => {
           fetchBlogs();
@@ -172,10 +172,10 @@ const BlogPage = () => {
           },
         }
       );
-      toast.success(data.message);
+      toast.success((data as { message: string }).message);
       setSaved(!saved);
       getSavedBlogs();
-    } catch (error) {
+    } catch {
       toast.error("Problem while saving blog");
     } finally {
       setLoading(false);

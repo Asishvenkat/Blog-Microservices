@@ -9,11 +9,12 @@ import toast from 'react-hot-toast';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import Loading from '@/components/loding';
+import { User } from '@/context/AppContext';
 
 interface LoginResponse {
   token: string;
   message: string;
-  user: any;
+  user: User;
 }
 
 const Login = () => {
