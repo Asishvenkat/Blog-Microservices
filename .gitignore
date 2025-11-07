@@ -1,0 +1,110 @@
+# =====================================================
+# Blog Microservices - Root .gitignore
+# =====================================================
+
+# ============ Environment & Secrets ============
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+*.env
+.env.*
+
+# ============ Node.js & Dependencies ============
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ============ Build Outputs ============
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# TypeScript cache
+*.tsbuildinfo
+next-env.d.ts
+
+# ============ Next.js (Frontend) ============
+.next/
+/.next/
+/out/
+
+# ============ Testing ============
+coverage/
+.nyc_output/
+*.lcov
+
+# ============ IDEs & Editors ============
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-workspace
+*.sublime-project
+
+# ============ OS Files ============
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ============ Logs ============
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ============ Docker ============
+docker-compose.override.yml
+.dockerignore
+
+# ============ Temporary Files ============
+*.tmp
+*.temp
+.cache/
+.temp/
+tmp/
+
+# ============ MongoDB (if using locally) ============
+*.mongodb
+
+# ============ Redis dumps ============
+dump.rdb
+
+# ============ SSL Certificates (if any) ============
+*.pem
+*.key
+*.crt
+*.cert
+
+# ============ Vercel (if deploying frontend) ============
+.vercel
+
+# ============ Qodo (AI code assistant) ============
+.qodo/
+
+# ============ Git ============
+*.orig
+*.rej
+
+# ============ Misc ============
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions

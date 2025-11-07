@@ -1,0 +1,27 @@
+{
+  "name": "blog-microservices",
+  "version": "1.0.0",
+  "description": "Blog Microservices - User, Author, Blog services + Frontend",
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail \"npm run dev:user\" \"npm run dev:author\" \"npm run dev:blog\" \"npm run dev:frontend\"",
+    "dev:user": "cd services/user && npm run dev",
+    "dev:author": "cd services/author && npm run dev",
+    "dev:blog": "cd services/blog && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "install:all": "concurrently \"npm install --prefix services/user\" \"npm install --prefix services/author\" \"npm install --prefix services/blog\" \"npm install --prefix frontend\"",
+    "build:all": "concurrently \"npm run build --prefix services/user\" \"npm run build --prefix services/author\" \"npm run build --prefix services/blog\" \"npm run build --prefix frontend\"",
+    "start:all": "concurrently \"npm run start --prefix services/user\" \"npm run start --prefix services/author\" \"npm run start --prefix services/blog\" \"npm run start --prefix frontend\""
+  },
+  "keywords": [
+    "microservices",
+    "blog",
+    "nextjs",
+    "express",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
