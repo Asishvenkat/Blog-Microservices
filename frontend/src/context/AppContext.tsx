@@ -12,13 +12,9 @@ import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
-export const user_service = "http://localhost:5000";
-export const author_service = "http://localhost:5001";
-export const blog_service = "http://localhost:5002";
-
-// export const user_service = "https://user-service-0y41.onrender.com";
-// export const author_service = "https://author-service-v1w2.onrender.com";
-// export const blog_service = "https://blog-service-ssnd.onrender.com";
+export const user_service = process.env.NEXT_PUBLIC_USER_SERVICE 
+export const author_service = process.env.NEXT_PUBLIC_AUTHOR_SERVICE 
+export const blog_service = process.env.NEXT_PUBLIC_BLOG_SERVICE 
 
 export const blogCategories = [
   "Techonlogy",
@@ -198,7 +194,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         getSavedBlogs,
       }}
     >
-      <GoogleOAuthProvider clientId="1036766914213-lve2g84bddgp7ijt6pnvhs7fcpigms9t.apps.googleusercontent.com">
+      <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ""}>
         {children}
         <Toaster />
       </GoogleOAuthProvider>
