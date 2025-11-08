@@ -176,6 +176,9 @@ const Profilepage = () => {
           
             <div className="flex flex-col sm:flex-row gap-2 mt-6 w-full justify-center">
                 <Button onClick={logoutHandler}>Logout</Button>
+                <Button onClick={() => router.push("/my-blogs")}>
+                  My Blogs
+                </Button>
                 <Button onClick={() => router.push("/blog/new")}>
                   Add Blog
                 </Button>

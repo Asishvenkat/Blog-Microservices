@@ -240,11 +240,13 @@ const BlogPage = () => {
           </p>
         </CardHeader>
         <CardContent>
-          <img
-            src={blog.image}
-            alt=""
-            className="w-full h-64 object-cover rounded-lg mb-4"
-          />
+          <div className="w-full mb-4 rounded-lg overflow-hidden">
+            <img
+              src={blog.image}
+              alt={blog.title}
+              className="w-full max-h-[600px] object-contain"
+            />
+          </div>
           <p className="text-lg text-gray-700 mb-4">{blog.description}</p>
           <div
             className="prose max-w-none"
