@@ -5,6 +5,11 @@ import uploadFile from "../middleware/multer.js";
 
 const router = express.Router();
 
+// Health check endpoint
+router.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", service: "user" });
+});
+
 router.post("/login",loginUser);
 router.get("/me",isAuth,myProfile);
 router.get("/user/:id",getUserProfile);

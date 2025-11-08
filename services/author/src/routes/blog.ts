@@ -11,6 +11,11 @@ import {
 
  const router = express();
 
+ // Health check endpoint
+ router.get("/health", (req, res) => {
+   res.status(200).json({ status: "ok", service: "author" });
+ });
+
  router.post("/blog/new",isAuth,uploadFile,createBlog)
  router.post("/blog/:id",isAuth,uploadFile, updatedBlog)
  router.delete("/blog/:id",isAuth,deleteBlog)

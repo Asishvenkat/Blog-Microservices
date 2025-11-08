@@ -12,6 +12,11 @@ import { isAuth } from "../middleware/isAuth.js";
 
 const router = express.Router();
 
+// Health check endpoint
+router.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok", service: "blog" });
+});
+
 router.get("/blog/all", getAllBlogs)
 router.get("/blog/:id", getSingleBlog)
 router.post("/comment/:id", isAuth, addComment);
