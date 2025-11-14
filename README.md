@@ -1,36 +1,53 @@
 #  The Reading Retreat - Blog Microservices Platform
 
+[![Lint](https://github.com/Asishvenkat/Blog-Microservices/actions/workflows/lint.yml/badge.svg)](https://github.com/Asishvenkat/Blog-Microservices/actions/workflows/lint.yml)
+[![Docker Build and Push](https://github.com/Asishvenkat/Blog-Microservices/actions/workflows/docker-build.yml/badge.svg)](https://github.com/Asishvenkat/Blog-Microservices/actions/workflows/docker-build.yml)
+[![Deploy to Render](https://github.com/Asishvenkat/Blog-Microservices/actions/workflows/deploy-render.yml/badge.svg)](https://github.com/Asishvenkat/Blog-Microservices/actions/workflows/deploy-render.yml)
+
 A full-stack blogging platform built with microservices architecture, featuring user authentication, blog creation with AI-powered content generation, real-time cache invalidation, and a modern Next.js frontend.
 
 ##  Architecture
 
 This project follows a microservices architecture with three backend services and a Next.js frontend:
 
+```mermaid
+flowchart LR
+    subgraph Frontend
+        A[Next.js App]
+    end
+
+    subgraph Services
+        B[User Service]
+        C[Author Service]
+        D[Blog Service]
+    end
+
+    subgraph DataStores[Managed Services]
+        E[(MongoDB)]
+        F[(PostgreSQL)]
+        G[(Redis)]
+    end
+
+    subgraph Messaging
+        H[(RabbitMQ)]
+    end
+
+    A <-->|REST| B
+    A <-->|REST| C
+    A <-->|REST| D
+
+    C <-->|REST| B
+    D <-->|REST| B
+
+    B --> E
+    C --> F
+    D --> F
+    D --> G
+    C --> H
+    D --> H
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                         Frontend                             │
-│              Next.js 15 + React 19 + Tailwind                │
-│                    http://localhost:3000                     │
-└──────────────┬──────────────┬──────────────┬────────────────┘
-               │              │              │
-       ┌───────▼──────┐ ┌────▼─────┐ ┌─────▼──────┐
-       │ User Service │ │  Author  │ │    Blog    │
-       │   :5000      │ │ Service  │ │  Service   │
-       │              │ │  :5001   │ │   :5002    │
-       └──────┬───────┘ └────┬─────┘ └─────┬──────┘
-              │              │              │
-              └──────┬───────┴──────┬───────┘
-                     │              │
-            ┌────────▼───────┐ ┌───▼──────────┐
-            │   PostgreSQL   │ │    Redis     │
-            │  (Neon Cloud)  │ │  (Upstash)   │
-            └────────────────┘ └──────────────┘
-                     │
-            ┌────────▼──────────┐
-            │     RabbitMQ      │
-            │  (CloudAMQP)      │
-            └───────────────────┘
-```
+
+> The Mermaid source is stored in `docs/architecture.mmd`.
 
 ### Services Overview
 
@@ -52,6 +69,7 @@ This project follows a microservices architecture with three backend services an
 -  **Redis Caching** - Fast blog retrieval with smart cache invalidation
 -  **Responsive UI** - Modern design with dark mode support
 -  **Docker Support** - Containerized services for easy deployment
+-  **DevOps Ready** - Docker Compose for local dev, Kubernetes manifests for Minikube, and CI/CD automation via GitHub Actions
 
 ##  Prerequisites
 
@@ -62,7 +80,17 @@ This project follows a microservices architecture with three backend services an
 
 ##  Local Development Setup
 
-### 1. Clone the Repository
+### Option A — Docker Compose (recommended)
+
+```bash
+docker compose up --build
+```
+
+The compose stack includes MongoDB, PostgreSQL, Redis, and RabbitMQ. Override environment variables with a `.env` file at the repository root (see service-specific `.env` sections below).
+
+### Option B — Manual Setup
+
+#### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Asishvenkat/Blog-Microservices.git
@@ -169,6 +197,20 @@ cd frontend && npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+## Kubernetes (Minikube)
+
+1. Push Docker images (or run `docker-build.yml` workflow).
+2. Create required secrets (see `k8s/README.md`).
+3. Deploy to the cluster:
+
+```powershell
+.\deploy.ps1
+```
+
+> The script applies manifests in the correct order and accepts `-Namespace`/`-K8sFolder` overrides as needed.
+
+For manual instructions, refer to `k8s/README.md`.
+
 ##  Required External Services
 
 ### Google Cloud (OAuth & Gemini AI)
@@ -219,6 +261,14 @@ docker run -p 5002:5002 --env-file .env blog-service
 ```
 
 For production deployment (Render, Railway, etc.), push images to Docker Hub and deploy from there.
+
+## CI/CD Pipelines
+
+- **Lint** (`lint.yml`): Runs ESLint across backend services on every PR and push to `main`.
+- **Docker Build and Push** (`docker-build.yml`): Builds and publishes service images to Docker Hub using repository secrets.
+- **Deploy to Render** (`deploy-render.yml`): Triggers Render deploy hooks for each service.
+
+See `.github/SETUP.md` for required secrets and configuration tips.
 
 ##  Project Structure
 
@@ -326,3 +376,10 @@ This project is licensed under the MIT License.
 ---
 
 **⭐ If you found this project helpful, please give it a star!**
+
+## Tooling Reference
+
+- `npm run lint` – run ESLint across backend services
+- `npm run format` – run Prettier in check mode
+- `docker compose up` – start local development stack
+- `.\deploy.ps1` – apply Kubernetes manifests to Minikube (defaults to namespace `blogsphere-dev`)

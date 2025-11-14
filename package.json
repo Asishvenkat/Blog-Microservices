@@ -10,7 +10,15 @@
     "dev:frontend": "cd frontend && npm run dev",
     "install:all": "concurrently \"npm install --prefix services/user\" \"npm install --prefix services/author\" \"npm install --prefix services/blog\" \"npm install --prefix frontend\"",
     "build:all": "concurrently \"npm run build --prefix services/user\" \"npm run build --prefix services/author\" \"npm run build --prefix services/blog\" \"npm run build --prefix frontend\"",
-    "start:all": "concurrently \"npm run start --prefix services/user\" \"npm run start --prefix services/author\" \"npm run start --prefix services/blog\" \"npm run start --prefix frontend\""
+    "start:all": "concurrently \"npm run start --prefix services/user\" \"npm run start --prefix services/author\" \"npm run start --prefix services/blog\" \"npm run start --prefix frontend\"",
+    "lint": "npm run lint:user && npm run lint:author && npm run lint:blog",
+    "lint:user": "npm run lint --prefix services/user",
+    "lint:author": "npm run lint --prefix services/author",
+    "lint:blog": "npm run lint --prefix services/blog",
+    "format": "npm run format:user && npm run format:author && npm run format:blog",
+    "format:user": "npm run format --prefix services/user",
+    "format:author": "npm run format --prefix services/author",
+    "format:blog": "npm run format --prefix services/blog"
   },
   "keywords": [
     "microservices",

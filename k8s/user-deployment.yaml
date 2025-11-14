@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+  namespace: blogsphere-dev
+  labels:
+    app: user-service
+    app.kubernetes.io/name: user-service
+    app.kubernetes.io/part-of: blogsphere
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: user-service
+  template:
+    metadata:
+      labels:
+        app: user-service
+        app.kubernetes.io/name: user-service
+    spec:
+      containers:
+        - name: user-service
+          image: asishvenkat/user-service:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: blogsphere-config
+                  key: NODE_ENV
+            - name: PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: blogsphere-config
+                  key: USER_PORT
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: blogsphere-secrets
+                  key: MONGO_URI
+            - name: JWT_SEC
+              valueFrom:
+                secretKeyRef:
+                  name: blogsphere-secrets
+                  key: JWT_SEC
+            - name: Cloud_name
+              valueFrom:
+                secretKeyRef:
+                  name: blogsphere-secrets
+                  key: CLOUDINARY_CLOUD_NAME
+            - name: Cloud_Api_Key
+              valueFrom:
+                secretKeyRef:
+                  name: blogsphere-secrets
+                  key: CLOUDINARY_API_KEY
+            - name: Cloud_Api_Secret
+              valueFrom:
+                secretKeyRef:
+                  name: blogsphere-secrets
+                  key: CLOUDINARY_API_SECRET
+            - name: Google_client_secret
+              valueFrom:
+                secretKeyRef:
+                  name: blogsphere-secrets
+                  key: GOOGLE_CLIENT_SECRET
+            - name: Google_Client_id
+              valueFrom:
+                secretKeyRef:
+                  name: blogsphere-secrets
+                  key: GOOGLE_CLIENT_ID
+          ports:
+            - containerPort: 5000
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          livenessProbe:
+            tcpSocket:
+              port: 5000
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            tcpSocket:
+              port: 5000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+

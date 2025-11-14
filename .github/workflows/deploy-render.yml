@@ -1,0 +1,38 @@
+name: Deploy to Render
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [render-deploy]
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/deploy-render.yml"
+
+jobs:
+  trigger-render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render webhooks
+        env:
+          RENDER_USER_WEBHOOK: ${{ secrets.RENDER_USER_WEBHOOK }}
+          RENDER_AUTHOR_WEBHOOK: ${{ secrets.RENDER_AUTHOR_WEBHOOK }}
+          RENDER_BLOG_WEBHOOK: ${{ secrets.RENDER_BLOG_WEBHOOK }}
+        run: |
+          missing=""
+          for var in RENDER_USER_WEBHOOK RENDER_AUTHOR_WEBHOOK RENDER_BLOG_WEBHOOK; do
+            if [ -z "${!var}" ]; then
+              missing="${missing} $var"
+            fi
+          done
+
+          if [ -n "$missing" ]; then
+            echo "The following secrets are missing:${missing}"
+            exit 1
+          fi
+
+          curl -fsSL -X POST "$RENDER_USER_WEBHOOK"
+          curl -fsSL -X POST "$RENDER_AUTHOR_WEBHOOK"
+          curl -fsSL -X POST "$RENDER_BLOG_WEBHOOK"
+

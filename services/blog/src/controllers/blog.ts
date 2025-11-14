@@ -1,4 +1,3 @@
-import express from "express";
 import { sql } from "../utils/db.js"
 import TryCatch from "../utils/TryCatch.js"
 import axios from "axios";

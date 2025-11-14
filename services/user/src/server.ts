@@ -18,10 +18,14 @@ cloudinary.config({
 app.use(express.json());
 app.use(cors());
 
+app.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 app.use("/api/v1", userRoutes);
 
 
-const port =process.env.PORT
+const port = process.env.PORT || 5000;
 
 connectDB();
 

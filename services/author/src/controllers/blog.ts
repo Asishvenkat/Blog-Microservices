@@ -147,16 +147,16 @@ export const aiTitleResponse = TryCatch(async (req, res) => {
       contents: prompt,
     });
 
-    let rawtext = response.text;
+    const rawText = response.text;
 
-    if (!rawtext) {
+    if (!rawText) {
       res.status(400).json({
         message: "Something went wrong",
       });
       return;
     }
 
-    result = rawtext
+    result = rawText
       .replace(/\*\*/g, "")
       .replace(/[\r\n]+/g, "")
       .replace(/[*_`~]/g, "")
@@ -199,16 +199,16 @@ following blog description and return only the corrected sentence. Do not add an
       contents: prompt,
     });
 
-    let rawtext = response.text;
+    const rawText = response.text;
 
-    if (!rawtext) {
+    if (!rawText) {
       res.status(400).json({
         message: "Something went wrong",
       });
       return;
     }
 
-    result = rawtext
+    result = rawText
       .replace(/\*\*/g, "")
       .replace(/[\r\n]+/g, "")
       .replace(/[*_`~]/g, "")
@@ -246,7 +246,7 @@ image tags, line breaks, and structural tags exactly as they are. Return the ful
 
   const ai = new GoogleGenerativeAI(apiKey);
 
-  const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const model = ai.getGenerativeModel({ model: "gemini-2.0-flash" });
 
   const result = await model.generateContent({
     contents: [

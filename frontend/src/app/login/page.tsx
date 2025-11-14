@@ -1,15 +1,21 @@
-"use client"
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+"use client";
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAppData, user_service } from '@/context/AppContext';
-import Cookies from 'js-cookie';
-import toast from 'react-hot-toast';
-import { useGoogleLogin } from '@react-oauth/google';
-import axios from 'axios';
-import Loading from '@/components/loding';
-import { User } from '@/context/AppContext';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useAppData, user_service } from "@/context/AppContext";
+import Cookies from "js-cookie";
+import toast from "react-hot-toast";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
+import Loading from "@/components/loding";
+import { User } from "@/context/AppContext";
 
 interface LoginResponse {
   token: string;
@@ -19,19 +25,22 @@ interface LoginResponse {
 
 const Login = () => {
   const router = useRouter();
-  const {isAuth, setIsAuth, setLoading, loading, setUser} = useAppData();
+  const { isAuth, setIsAuth, setLoading, loading, setUser } = useAppData();
 
-  // Client-side redirect if already authenticated
   useEffect(() => {
     if (isAuth) router.push("/");
   }, [isAuth, router]);
 
   const reponseGoogle = async (authResult: { code: string }) => {
     try {
-      setLoading(true); // show loading
-      const result = await axios.post<LoginResponse>(`${user_service}/api/v1/login`, {
-        code: authResult.code,
-      });
+      setLoading(true);
+
+      const result = await axios.post<LoginResponse>(
+        `${user_service}/api/v1/login`,
+        {
+          code: authResult.code,
+        }
+      );
 
       Cookies.set("token", result.data.token, {
         expires: 7,
@@ -46,9 +55,9 @@ const Login = () => {
       console.log("Error", err);
       toast.error("Login failed");
     } finally {
-      setLoading(false); // hide loading
+      setLoading(false);
     }
-  }
+  };
 
   const googlelogin = useGoogleLogin({
     flow: "auth-code",
@@ -62,27 +71,46 @@ const Login = () => {
     onError: (err) => {
       console.error("Google login error", err);
       toast.error("Google login failed");
-    }
+    },
   });
 
   if (loading) return <Loading />;
 
   return (
-    <div className='w-[390px] m-auto mt-[200px]'>
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle>Login to The Reading Retreat</CardTitle>
-          <CardDescription>Your go-to blog app</CardDescription>
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-100 p-6">
+      <Card className="w-full max-w-md shadow-xl backdrop-blur-md bg-white/80 border border-white/40">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl font-bold">
+            Welcome Back 
+          </CardTitle>
+          <CardDescription className="text-base">
+            Login to <span className="font-semibold">The Reading Retreat</span>
+          </CardDescription>
         </CardHeader>
-        <CardContent>
-          <Button onClick={googlelogin}>
+
+        <CardContent className="mt-4 flex flex-col items-center">
+          <Button
+            onClick={googlelogin}
+            className="w-full flex items-center justify-center gap-3 py-6 text-lg hover:bg-gray-100"
+            variant="outline"
+          >
+            <img
+              src={"/google.webp"}
+              className="w-6 h-6"
+              alt="google icon"
+            />
             Login with Google
-            <img src={'/google.webp'} className='w-6 h-6 ml-2' alt="google icon"/>
           </Button>
+
+          <p className="text-sm text-gray-600 mt-4 text-center">
+            By continuing, you agree to our{" "}
+            <span className="text-blue-600 cursor-pointer">Terms</span> and{" "}
+            <span className="text-blue-600 cursor-pointer">Privacy Policy</span>
+          </p>
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};
 
 export default Login;

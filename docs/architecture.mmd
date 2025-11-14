@@ -1,0 +1,37 @@
+```mermaid
+flowchart LR
+    subgraph Frontend
+        A[Next.js App]
+    end
+
+    subgraph Services
+        B[User Service]
+        C[Author Service]
+        D[Blog Service]
+    end
+
+    subgraph DataStores[Managed Services]
+        E[(MongoDB)]
+        F[(PostgreSQL)]
+        G[(Redis)]
+    end
+
+    subgraph Messaging
+        H[(RabbitMQ)]
+    end
+
+    A <-->|REST| B
+    A <-->|REST| C
+    A <-->|REST| D
+
+    C <-->|REST| B
+    D <-->|REST| B
+
+    B --> E
+    C --> F
+    D --> F
+    D --> G
+    C --> H
+    D --> H
+```
+
