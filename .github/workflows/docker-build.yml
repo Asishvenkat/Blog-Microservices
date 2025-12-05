@@ -2,13 +2,13 @@ name: Docker Build and Push
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - "services/**"
-      - "docker-compose.yml"
-      - ".github/workflows/docker-build.yml"
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - "services/**"
+  #     - "docker-compose.yml"
+  #     - ".github/workflows/docker-build.yml"
 
 env:
   REGISTRY: docker.io
@@ -55,4 +55,3 @@ jobs:
           tags: |
             ${{ steps.vars.outputs.IMAGE }}:latest
             ${{ steps.vars.outputs.IMAGE }}:${{ github.sha }}
-

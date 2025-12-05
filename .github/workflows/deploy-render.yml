@@ -2,13 +2,13 @@ name: Deploy to Render
 
 on:
   workflow_dispatch:
-  repository_dispatch:
-    types: [render-deploy]
-  push:
-    branches:
-      - main
-    paths:
-      - ".github/workflows/deploy-render.yml"
+  # repository_dispatch:
+  #   types: [render-deploy]
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - ".github/workflows/deploy-render.yml"
 
 jobs:
   trigger-render:
@@ -35,4 +35,3 @@ jobs:
           curl -fsSL -X POST "$RENDER_USER_WEBHOOK"
           curl -fsSL -X POST "$RENDER_AUTHOR_WEBHOOK"
           curl -fsSL -X POST "$RENDER_BLOG_WEBHOOK"
-
