@@ -26,9 +26,21 @@ interface LoginResponse {
 const Login = () => {
   const router = useRouter();
   const { isAuth, setIsAuth, setLoading, loading, setUser } = useAppData();
+  const redirectUri = typeof window !== 'undefined' ? `${window.location.origin}/login` : '';
 
   useEffect(() => {
-    if (isAuth) router.push("/");
+    if (isAuth) {
+      router.push("/");
+      return;
+    }
+    
+    // Handle OAuth redirect callback
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    
+    if (code) {
+      reponseGoogle({ code });
+    }
   }, [isAuth, router]);
 
   const reponseGoogle = async (authResult: { code: string }) => {
@@ -39,6 +51,7 @@ const Login = () => {
         `${user_service}/api/v1/login`,
         {
           code: authResult.code,
+          redirect_uri: redirectUri,
         }
       );
 
@@ -61,6 +74,8 @@ const Login = () => {
 
   const googlelogin = useGoogleLogin({
     flow: "auth-code",
+    ux_mode: "redirect",
+    redirect_uri: redirectUri,
     onSuccess: async (authResult) => {
       if (!authResult.code) {
         toast.error("Google login failed: no code received");

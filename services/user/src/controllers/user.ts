@@ -6,7 +6,7 @@ import { AuthenticatedRequest } from "../middleware/isAuth.js";
 import getBuffer from "../utils/dataUri.js";
 import { v2 as cloudinary } from 'cloudinary'; 
 import axios from "axios";
-import { oauth2Client } from "../utils/GoogleConfig.js";
+import { createOAuthClient } from "../utils/GoogleConfig.js";
 
 export const loginUser=TryCatch(async(req:Request,res:Response)=>{
 
@@ -19,10 +19,11 @@ export const loginUser=TryCatch(async(req:Request,res:Response)=>{
      }
 
 
-     const googleRes = await oauth2Client.getToken(code);
+    const oauth2Client = createOAuthClient(req.body.redirect_uri);
 
-     
-     oauth2Client.setCredentials(googleRes.tokens);
+    const googleRes = await oauth2Client.getToken(code);
+
+    oauth2Client.setCredentials(googleRes.tokens);
 
     const userRes = await axios.get<GoogleUserInfo>(`https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${
         googleRes.tokens.access_token}`
