@@ -76,3 +76,4 @@ initDb().then(() => {
 }).catch((err) => {
   console.error("❌ Failed to initialize DB:", err);
 });
+

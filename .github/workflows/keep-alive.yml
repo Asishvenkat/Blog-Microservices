@@ -1,0 +1,23 @@
+name: Keep Render Microservices Alive
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"    
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping Service 1 (API Gateway or Main API)
+        run: |
+          curl -s https://blog-service-ssnd.onrender.com/health || echo "Service 1 failed"
+
+      - name: Ping Service 2 (Auth OR Orders OR Users)
+        run: |
+          curl -s https://author-service-v1w2.onrender.com/health || echo "Service 2 failed"
+
+      - name: Ping Service 3 (Products OR Posts OR Notifications)
+        run: |
+          curl -s https://user-service-0y41.onrender.com/health || echo "Service 3 failed"
