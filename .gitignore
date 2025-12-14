@@ -22,7 +22,7 @@ pnpm-debug.log*
 .pnpm-debug.log*
 
 # Package manager files
-package-lock.json
+# package-lock.json (needed for Docker builds)
 yarn.lock
 pnpm-lock.yaml
 
