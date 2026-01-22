@@ -16,7 +16,10 @@ cloudinary.config({
 });
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://blog-microservices-neon.vercel.app'],
+  credentials: true
+}));
 
 app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok" });

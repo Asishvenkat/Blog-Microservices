@@ -92,6 +92,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        withCredentials: true,
       });
 
       setUser(data);
@@ -143,6 +144,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          withCredentials: true,
         }
       );
       setSavedBlogs(data);

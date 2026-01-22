@@ -72,6 +72,7 @@ const BlogPage = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          withCredentials: true,
         }
       );
       toast.success((data as { message: string }).message);
@@ -109,6 +110,7 @@ const BlogPage = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
+            withCredentials: true,
           }
         );
         toast.success((data as { message: string }).message);
@@ -170,6 +172,7 @@ const BlogPage = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          withCredentials: true,
         }
       );
       toast.success((data as { message: string }).message);

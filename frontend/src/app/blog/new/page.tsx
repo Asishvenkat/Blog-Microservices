@@ -77,6 +77,7 @@ const AddBlog = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          withCredentials: true,
         }
       );
 

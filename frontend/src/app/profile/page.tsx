@@ -57,6 +57,7 @@ const Profilepage = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          withCredentials: true,
         }
       );
       const data = response.data as { message: string; user: typeof user };
@@ -88,6 +89,7 @@ const Profilepage = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
+            withCredentials: true,
           }
         );
         const data = response.data as { message: string; token: string; user: { _id: string; name: string; email: string; image: string; password: string; instagram: string; facebook: string; linkedin: string; bio: string } };

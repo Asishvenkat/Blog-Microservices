@@ -40,6 +40,7 @@ const MyBlogsPage = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
+            withCredentials: true,
           }
         );
         
@@ -80,6 +81,7 @@ const MyBlogsPage = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          withCredentials: true,
         }
       );
       

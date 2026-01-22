@@ -113,6 +113,7 @@ const EditBlogPage = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          withCredentials: true,
         }
       );
 
