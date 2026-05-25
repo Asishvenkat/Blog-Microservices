@@ -168,6 +168,16 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   }
 
   useEffect(() => {
+    // Wake up all Render backend services concurrently when the app opens
+    const services = [user_service, author_service, blog_service];
+    services.forEach(service => {
+      if (service) {
+        axios.get(`${service}/health`).catch(() => {});
+      }
+    });
+  }, []);
+
+  useEffect(() => {
     fetchUser();
     getSavedBlogs();
   }, [fetchUser]);
