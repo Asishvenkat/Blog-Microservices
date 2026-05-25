@@ -20,21 +20,24 @@ app.get("/health", (_req, res) => {
 
 const PORT = process.env.PORT || 5002;
 
-startCacheConsumer();
-
 export const redisClient = createClient({
     url: process.env.REDIS_URL
 });
 
-redisClient
-  .connect()
-  .then(()=> console.log("Connected to Redis"))
-  .catch(console.error);
-
-
 app.use('/api/v1', blogRoutes);
-
 
 app.listen(PORT, () => {
     console.log(`Blog service is running on port ${PORT}`);
+
+    // Connect to Redis asynchronously after server starts
+    redisClient
+      .connect()
+      .then(() => console.log("Connected to Redis"))
+      .catch((err) => console.error("Redis connection error:", err));
+
+    // Connect to RabbitMQ consumer asynchronously after server starts
+    startCacheConsumer()
+      .then(() => console.log("RabbitMQ consumer connected"))
+      .catch((err) => console.error("RabbitMQ connection error:", err));
 });
+

@@ -34,14 +34,22 @@ export const startCacheConsumer = async () => {
                         content
                     );
                    
-                    if(content.action === "invalidate_cache" ){
-                        for(const pattern of content.keys){
-                            const keys = await redisClient.keys(pattern)
+                    if (content.action === "invalidate_cache") {
+                        for (const pattern of content.keys) {
+                            let keys: string[] = [];
+                            try {
+                                keys = await redisClient.keys(pattern);
+                            } catch (err) {
+                                console.error("Redis keys lookup failed during invalidation:", err);
+                            }
 
                             if(keys.length > 0){
-                                await redisClient.del(keys);
-                                console.log(`🗑️ Blog service invalidated ${keys.length} cache keys
-                             matching: ${pattern}`);
+                                try {
+                                    await redisClient.del(keys);
+                                    console.log(`🗑️ Blog service invalidated ${keys.length} cache keys matching: ${pattern}`);
+                                } catch (err) {
+                                    console.error("Redis del failed during invalidation:", err);
+                                }
                 
                                 const category = ""
 
@@ -51,12 +59,15 @@ export const startCacheConsumer = async () => {
 
                                 const blogs = await sql`SELECT * FROM blogs ORDER BY create_at DESC`;
 
-                                await redisClient.setEx(cacheKey, 3600, JSON.stringify(blogs)); 
-                                
-                                console.log("🔄️ Cache rebuilt with key:", cacheKey);
+                                try {
+                                    await redisClient.setEx(cacheKey, 3600, JSON.stringify(blogs)); 
+                                    console.log("🔄️ Cache rebuilt with key:", cacheKey);
+                                } catch (err) {
+                                    console.error("Redis setEx failed during cache rebuild:", err);
+                                }
                             }
+                        }
                     }
-                }
                  channel.ack(msg);
                 }catch (err) {
                     console.error("❌ Error processing cache invalidation message", err);

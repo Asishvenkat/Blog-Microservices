@@ -8,40 +8,54 @@ export const getAllBlogs = TryCatch(async (req, res) => {
     const {searchQuery = "",category = ""} = req.query;
    
    const cacheKey = `blogs:${searchQuery}:${category}`;
+   let cached = null;
 
-   const cached = await redisClient.get(cacheKey);
-
-   if(cached){
-     console.log("Serving from cache")
-     res.json(JSON.parse(cached));
-     return;
+   try {
+     cached = await redisClient.get(cacheKey);
+     if (cached) {
+       console.log("Serving from cache");
+       res.json(JSON.parse(cached));
+       return;
+     }
+   } catch (err) {
+     console.error("Redis get error:", err);
    }
 
    let blogs;
 
-    if(searchQuery && category){
-        blogs= await sql`SELECT * FROM blogs WHERE title ILIKE ${'%' + 
-            searchQuery + '%'} OR description ILIKE ${'%' + searchQuery + '%'} 
-            AND category = ${category} ORDER BY create_at DESC`
-        return res.status(200).json({ blogs })
-    }
-    else if(searchQuery){
-           blogs= await sql`SELECT * FROM blogs WHERE title ILIKE ${'%' + 
-            searchQuery + '%'} OR description ILIKE ${'%' + searchQuery + '%'} 
-             ORDER BY create_at DESC`
-    }
-    else if(category){
-            blogs= await sql`SELECT * FROM blogs WHERE category = ${category} ORDER BY create_at DESC`
-    }
-    else{
-            blogs= await sql`SELECT * FROM blogs ORDER BY create_at DESC`
-    }
+     if(searchQuery && category){
+         blogs= await sql`SELECT * FROM blogs WHERE title ILIKE ${'%' + 
+             searchQuery + '%'} OR description ILIKE ${'%' + searchQuery + '%'} 
+             AND category = ${category} ORDER BY create_at DESC`;
+         
+         try {
+           await redisClient.setEx(cacheKey, 3600, JSON.stringify(blogs));
+         } catch (err) {
+           console.error("Redis set error:", err);
+         }
+         return res.status(200).json({ blogs });
+     }
+     else if(searchQuery){
+            blogs= await sql`SELECT * FROM blogs WHERE title ILIKE ${'%' + 
+             searchQuery + '%'} OR description ILIKE ${'%' + searchQuery + '%'} 
+              ORDER BY create_at DESC`
+     }
+     else if(category){
+             blogs= await sql`SELECT * FROM blogs WHERE category = ${category} ORDER BY create_at DESC`
+     }
+     else{
+             blogs= await sql`SELECT * FROM blogs ORDER BY create_at DESC`
+     }
    
-    console.log("Serving from DB")
+     console.log("Serving from DB")
 
-    await redisClient.setEx(cacheKey, 3600, JSON.stringify(blogs)); // Cache for 1 hour
+     try {
+       await redisClient.setEx(cacheKey, 3600, JSON.stringify(blogs)); // Cache for 1 hour
+     } catch (err) {
+       console.error("Redis set error:", err);
+     }
 
-    res.status(200).json({ blogs })
+     res.status(200).json({ blogs })
 });
 
 export const getSingleBlog = TryCatch(async (req, res) => {
@@ -49,14 +63,19 @@ export const getSingleBlog = TryCatch(async (req, res) => {
     const blogid = req.params.id;
 
     const cacheKey = `blog:${blogid}`;
+    let cached = null;
 
-    const cached = await redisClient.get(cacheKey);
-
-    if(cached){
-        console.log("Serving from cache")
-        res.json(JSON.parse(cached));
-        return;
+    try {
+      cached = await redisClient.get(cacheKey);
+      if (cached) {
+          console.log("Serving from cache");
+          res.json(JSON.parse(cached));
+          return;
+      }
+    } catch (err) {
+      console.error("Redis get error:", err);
     }
+
     const blog = await sql`SELECT * FROM blogs WHERE id = ${blogid}`;
     
     if(blog.length === 0){
@@ -64,7 +83,11 @@ export const getSingleBlog = TryCatch(async (req, res) => {
     }
     const {data} = await axios.get(`${process.env.USER_SERVICE}/api/v1/user/${blog[0].author}`)
 
-    await redisClient.setEx(cacheKey, 3600, JSON.stringify({ blog: blog[0], author: data})); 
+    try {
+      await redisClient.setEx(cacheKey, 3600, JSON.stringify({ blog: blog[0], author: data})); 
+    } catch (err) {
+      console.error("Redis set error:", err);
+    }
 
     console.log("Serving from DB")
     
